@@ -17,6 +17,8 @@ Wires RTK CLI proxy, agent hooks, skills, MCP servers, and per-project instructi
 
 Both support `--dry-run` to preview changes before applying.
 
+Both scripts are **idempotent** — safe to re-run at any time. Each step checks whether it's already applied and skips if so. Re-running will install only what's missing.
+
 ---
 
 ## What Each Installs
@@ -32,7 +34,7 @@ Both support `--dry-run` to preview changes before applying.
 | 5 | RTK **ultra-compact** in hooks | 5–10% extra savings on all RTK outputs |
 | 6 | `.claudeignore` template | Stored for project use (per-project only) |
 | 7 | **CLAUDE.md** response style | Enforces concise replies |
-| 8 | **TOML filters** (brew, nix, kubectl) | Covers tools not in RTK built-ins |
+| 8 | **TOML filters** (brew, nix, kubectl) | Appended to `~/Library/Application Support/rtk/filters.toml` |
 | 9 | **AGENTS.md** → `~/.agents/` + `~/.codex/` | Global instructions for Zed, Codex |
 | 10 | **Skills** → `~/.copilot/skills/` + `~/.agents/skills/` | caveman, token-cost-optimizer, compress |
 | 11 | **Compress memory files** (optional) | ~60% input token reduction on system prompt |
