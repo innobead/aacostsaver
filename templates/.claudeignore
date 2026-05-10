@@ -1,0 +1,89 @@
+# .claudeignore — Exclude noisy/generated files from Claude Code's context
+# Place this file at project root or copy to ~/.claude/.claudeignore for global use
+
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Build outputs
+dist/
+build/
+out/
+target/
+.next/
+.nuxt/
+.output/
+
+# Lock files (huge, rarely useful for AI context)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+Gemfile.lock
+poetry.lock
+composer.lock
+go.sum
+
+# Minified / generated
+*.min.js
+*.min.css
+*.map
+*.d.ts.map
+
+# Binary / media
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.pdf
+*.zip
+*.tar.gz
+*.tgz
+
+# Database / secrets
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+*.pem
+*.key
+*.cert
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Test coverage / reports
+coverage/
+.nyc_output/
+htmlcov/
+*.lcov
+junit.xml
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Nix
+result
+result-*
+.direnv/

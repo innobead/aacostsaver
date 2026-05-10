@@ -1,0 +1,21 @@
+# RTK TOML filter for kubectl describe (supplement to built-in rtk kubectl)
+# Place at: <project-root>/.rtk/kubectl-describe.toml
+
+[[filter]]
+name = "kubectl-describe"
+match = "kubectl describe"
+rules = [
+    { action = "drop", pattern = "^  (Tolerations|Node-Selectors|Annotations):" },
+    { action = "drop", pattern = "^\\s+<none>$" },
+    { action = "drop", pattern = "^\\s{10,}" },
+    { action = "drop", pattern = "^Events:\\s*$" },
+    { action = "truncate", max_lines = 80 },
+]
+
+[[filter]]
+name = "kubectl-get-all"
+match = "kubectl get"
+rules = [
+    { action = "drop", pattern = "^\\s*$" },
+    { action = "truncate", max_lines = 100 },
+]

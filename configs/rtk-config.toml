@@ -1,0 +1,12 @@
+# RTK Configuration — ultra-compact additions
+# Apply by merging into: ~/Library/Application Support/rtk/config.toml
+# On Linux: ~/.config/rtk/config.toml
+# Run: rtk config  to find the exact path
+
+# Add this section to enable ultra-compact in hook invocations:
+[hooks]
+# Rewrite hook commands to include --ultra-compact flag
+# This reduces icon+formatting overhead on all intercepted commands
+ultra_compact = true
+exclude_commands = []
+

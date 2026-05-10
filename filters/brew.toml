@@ -1,0 +1,29 @@
+# RTK TOML filter for brew output
+# Place at: <project-root>/.rtk/brew.toml  or trust globally
+# Run: rtk trust  to enable project-local filters
+
+[[filter]]
+name = "brew-install"
+match = "brew install"
+rules = [
+    { action = "drop", pattern = "^==> (Downloading|Pouring|Fetching|Checking)" },
+    { action = "drop", pattern = "^Already downloaded:" },
+    { action = "drop", pattern = "^\\s*$" },
+    { action = "truncate", max_lines = 20 },
+]
+
+[[filter]]
+name = "brew-list"
+match = "brew list"
+rules = [
+    { action = "truncate", max_lines = 50 },
+    { action = "drop", pattern = "^\\s*$" },
+]
+
+[[filter]]
+name = "brew-info"
+match = "brew info"
+rules = [
+    { action = "drop", pattern = "^(From:|Analytics:|Install:|Build Error|HEAD)" },
+    { action = "truncate", max_lines = 30 },
+]

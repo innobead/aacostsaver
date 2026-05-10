@@ -1,0 +1,31 @@
+# RTK TOML filter for nix output
+# Place at: <project-root>/.rtk/nix.toml
+
+[[filter]]
+name = "nix-build"
+match = "nix build"
+rules = [
+    { action = "drop", pattern = "^(copying path|fetching|downloading|unpacking|patching|building|installing|post-installation)" },
+    { action = "drop", pattern = "^these .* will be" },
+    { action = "drop", pattern = "^(warning:|note:).*already" },
+    { action = "drop", pattern = "^\\s*$" },
+    { action = "truncate", max_lines = 30 },
+]
+
+[[filter]]
+name = "nix-develop"
+match = "nix develop"
+rules = [
+    { action = "drop", pattern = "^(copying|fetching|building|warning:)" },
+    { action = "drop", pattern = "^\\s*$" },
+    { action = "truncate", max_lines = 20 },
+]
+
+[[filter]]
+name = "nix-store"
+match = "nix-store"
+rules = [
+    { action = "drop", pattern = "^copying path" },
+    { action = "drop", pattern = "^\\s*$" },
+    { action = "truncate", max_lines = 50 },
+]
