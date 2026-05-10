@@ -1,29 +1,27 @@
-# RTK TOML filter for brew output
-# Place at: <project-root>/.rtk/brew.toml  or trust globally
-# Run: rtk trust  to enable project-local filters
+# RTK TOML filter for brew output — appended to ~/Library/Application Support/rtk/filters.toml
+# Format: https://github.com/innobead/rtk#custom-toml-filters
 
-[[filter]]
-name = "brew-install"
-match = "brew install"
-rules = [
-    { action = "drop", pattern = "^==> (Downloading|Pouring|Fetching|Checking)" },
-    { action = "drop", pattern = "^Already downloaded:" },
-    { action = "drop", pattern = "^\\s*$" },
-    { action = "truncate", max_lines = 20 },
+[filters.brew-install]
+description = "Strip brew install download noise"
+match_command = "^brew install\\b"
+strip_ansi = true
+strip_lines_matching = [
+    "^==> (Downloading|Pouring|Fetching|Checking)",
+    "^Already downloaded:",
+    "^\\s*$",
 ]
+max_lines = 20
 
-[[filter]]
-name = "brew-list"
-match = "brew list"
-rules = [
-    { action = "truncate", max_lines = 50 },
-    { action = "drop", pattern = "^\\s*$" },
-]
+[filters.brew-list]
+description = "Truncate brew list output"
+match_command = "^brew list\\b"
+strip_ansi = true
+strip_lines_matching = ["^\\s*$"]
+max_lines = 50
 
-[[filter]]
-name = "brew-info"
-match = "brew info"
-rules = [
-    { action = "drop", pattern = "^(From:|Analytics:|Install:|Build Error|HEAD)" },
-    { action = "truncate", max_lines = 30 },
-]
+[filters.brew-info]
+description = "Strip brew info boilerplate"
+match_command = "^brew info\\b"
+strip_ansi = true
+strip_lines_matching = ["^(From:|Analytics:|Install:|Build Error|HEAD)"]
+max_lines = 30

@@ -179,12 +179,22 @@ if [[ -f "$RTK_CONFIG_PATH" ]]; then
     ok "Already set in RTK config"
   else
     if $DRY_RUN; then
-      dry "Would append ultra_compact=true to $RTK_CONFIG_PATH"
+      dry "Would add ultra_compact=true to [hooks] in $RTK_CONFIG_PATH"
     else
-      echo "" >> "$RTK_CONFIG_PATH"
-      echo "# Added by aacostsaver" >> "$RTK_CONFIG_PATH"
-      echo "[hooks]" >> "$RTK_CONFIG_PATH"
-      echo "ultra_compact = true" >> "$RTK_CONFIG_PATH"
+      python3 - <<PYEOF
+import re
+path = "$RTK_CONFIG_PATH"
+with open(path) as f:
+    content = f.read()
+if '[hooks]' in content:
+    # Insert ultra_compact after the [hooks] line
+    content = re.sub(r'(\[hooks\]\n)', r'\1ultra_compact = true\n', content, count=1)
+else:
+    content += '\n[hooks]\nultra_compact = true\n'
+with open(path, 'w') as f:
+    f.write(content)
+print('Done')
+PYEOF
       ok "ultra_compact = true added to hooks section"
     fi
   fi
@@ -239,17 +249,35 @@ bold "8. Custom TOML filters (brew, nix, kubectl)"
 if $SKIP_FILTERS; then
   skip "Skipped (--skip-filters)"
 else
-  FILTER_DEST="$HOME/.config/rtk/filters"
-  run mkdir -p "$FILTER_DEST"
-  for f in "$SCRIPT_DIR/filters"/*.toml; do
-    name=$(basename "$f")
-    if [[ -f "$FILTER_DEST/$name" ]]; then
-      ok "$name — already present"
-    else
-      run cp "$f" "$FILTER_DEST/$name"
-      ok "$name — installed"
-    fi
-  done
+  # RTK uses a single global filters.toml file
+  if [[ -f "$HOME/Library/Application Support/rtk/filters.toml" ]]; then
+    RTK_FILTERS="$HOME/Library/Application Support/rtk/filters.toml"
+  elif [[ -f "$HOME/.config/rtk/filters.toml" ]]; then
+    RTK_FILTERS="$HOME/.config/rtk/filters.toml"
+  else
+    RTK_FILTERS=""
+  fi
+
+  if [[ -z "$RTK_FILTERS" ]]; then
+    skip "RTK filters.toml not found — run: rtk config  to initialize"
+  else
+    for f in "$SCRIPT_DIR/filters"/*.toml; do
+      name=$(basename "$f" .toml)
+      if grep -q "\[filters\.$name-" "$RTK_FILTERS" 2>/dev/null || grep -q "\[filters\.${name}" "$RTK_FILTERS" 2>/dev/null; then
+        ok "$name filters — already present"
+      else
+        if $DRY_RUN; then
+          dry "Would append $name filters to $RTK_FILTERS"
+        else
+          echo "" >> "$RTK_FILTERS"
+          echo "# --- $name filters (added by aacostsaver) ---" >> "$RTK_FILTERS"
+          # strip comment header lines from source files before appending
+          grep -v "^#" "$f" >> "$RTK_FILTERS"
+          ok "$name filters — appended to $RTK_FILTERS"
+        fi
+      fi
+    done
+  fi
 fi
 echo ""
 

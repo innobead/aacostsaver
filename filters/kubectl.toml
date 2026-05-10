@@ -1,21 +1,21 @@
-# RTK TOML filter for kubectl describe (supplement to built-in rtk kubectl)
-# Place at: <project-root>/.rtk/kubectl-describe.toml
+# RTK TOML filter for kubectl — appended to ~/Library/Application Support/rtk/filters.toml
+# Supplements the built-in rtk kubectl command
 
-[[filter]]
-name = "kubectl-describe"
-match = "kubectl describe"
-rules = [
-    { action = "drop", pattern = "^  (Tolerations|Node-Selectors|Annotations):" },
-    { action = "drop", pattern = "^\\s+<none>$" },
-    { action = "drop", pattern = "^\\s{10,}" },
-    { action = "drop", pattern = "^Events:\\s*$" },
-    { action = "truncate", max_lines = 80 },
+[filters.kubectl-describe]
+description = "Strip kubectl describe noise (tolerations, annotations)"
+match_command = "^kubectl describe\\b"
+strip_ansi = true
+strip_lines_matching = [
+    "^  (Tolerations|Node-Selectors|Annotations):",
+    "^\\s+<none>$",
+    "^\\s{10,}",
+    "^Events:\\s*$",
 ]
+max_lines = 80
 
-[[filter]]
-name = "kubectl-get-all"
-match = "kubectl get"
-rules = [
-    { action = "drop", pattern = "^\\s*$" },
-    { action = "truncate", max_lines = 100 },
-]
+[filters.kubectl-get]
+description = "Truncate kubectl get output"
+match_command = "^kubectl get\\b"
+strip_ansi = true
+strip_lines_matching = ["^\\s*$"]
+max_lines = 100

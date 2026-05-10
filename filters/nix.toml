@@ -1,31 +1,33 @@
-# RTK TOML filter for nix output
-# Place at: <project-root>/.rtk/nix.toml
+# RTK TOML filter for nix output — appended to ~/Library/Application Support/rtk/filters.toml
 
-[[filter]]
-name = "nix-build"
-match = "nix build"
-rules = [
-    { action = "drop", pattern = "^(copying path|fetching|downloading|unpacking|patching|building|installing|post-installation)" },
-    { action = "drop", pattern = "^these .* will be" },
-    { action = "drop", pattern = "^(warning:|note:).*already" },
-    { action = "drop", pattern = "^\\s*$" },
-    { action = "truncate", max_lines = 30 },
+[filters.nix-build]
+description = "Strip nix build/fetch noise"
+match_command = "^nix build\\b"
+strip_ansi = true
+strip_lines_matching = [
+    "^(copying path|fetching|downloading|unpacking|patching|building|installing|post-installation)",
+    "^these .* will be",
+    "^(warning:|note:).*already",
+    "^\\s*$",
 ]
+max_lines = 30
 
-[[filter]]
-name = "nix-develop"
-match = "nix develop"
-rules = [
-    { action = "drop", pattern = "^(copying|fetching|building|warning:)" },
-    { action = "drop", pattern = "^\\s*$" },
-    { action = "truncate", max_lines = 20 },
+[filters.nix-develop]
+description = "Strip nix develop noise"
+match_command = "^nix develop\\b"
+strip_ansi = true
+strip_lines_matching = [
+    "^(copying|fetching|building|warning:)",
+    "^\\s*$",
 ]
+max_lines = 20
 
-[[filter]]
-name = "nix-store"
-match = "nix-store"
-rules = [
-    { action = "drop", pattern = "^copying path" },
-    { action = "drop", pattern = "^\\s*$" },
-    { action = "truncate", max_lines = 50 },
+[filters.nix-store]
+description = "Strip nix-store copy output"
+match_command = "^nix-store\\b"
+strip_ansi = true
+strip_lines_matching = [
+    "^copying path",
+    "^\\s*$",
 ]
+max_lines = 50
