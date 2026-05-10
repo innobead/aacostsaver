@@ -1,0 +1,52 @@
+{
+  "lspServers": {
+    "go": {
+      "command": "gopls",
+      "args": [],
+      "fileExtensions": {
+        ".go": "go"
+      }
+    },
+    "typescript": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"],
+      "fileExtensions": {
+        ".ts": "typescript",
+        ".tsx": "typescriptreact",
+        ".js": "javascript",
+        ".jsx": "javascriptreact",
+        ".mjs": "javascript",
+        ".cjs": "javascript"
+      }
+    },
+    "rust": {
+      "command": "rust-analyzer",
+      "args": [],
+      "fileExtensions": {
+        ".rs": "rust"
+      }
+    },
+    "python": {
+      "command": "pyright-langserver",
+      "args": ["--stdio"],
+      "fileExtensions": {
+        ".py": "python",
+        ".pyi": "python"
+      }
+    },
+    "cpp": {
+      "command": "clangd",
+      "args": [],
+      "fileExtensions": {
+        ".c": "c",
+        ".cc": "cpp",
+        ".cpp": "cpp",
+        ".cxx": "cpp",
+        ".h": "c",
+        ".hh": "cpp",
+        ".hpp": "cpp",
+        ".hxx": "cpp"
+      }
+    }
+  }
+}

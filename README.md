@@ -38,8 +38,20 @@ Both scripts are **idempotent** — safe to re-run at any time. Each step checks
 | 9 | **AGENTS.md** → `~/.agents/` + `~/.codex/` | Global instructions for Zed, Codex |
 | 10 | **Skills** → `~/.copilot/skills/` + `~/.agents/skills/` | caveman, token-cost-optimizer, compress |
 | 11 | **Compress memory files** (optional) | ~60% input token reduction on system prompt |
+| 12 | **Copilot CLI LSP config** → `~/.copilot/lsp-config.json` | Code intelligence for Go, TS/JS, Rust, Python, C/C++ |
+| 13 | **Claude Code LSP plugins** | Same languages via `claude plugin install` |
 
 > **Note on Copilot:** GitHub Copilot has no global instructions file. Global Copilot behavior is handled by hooks (step 2) and skills (step 10). Project-level `.github/copilot-instructions.md` is written by `install-project.sh --agents copilot`.
+
+> **Note on LSP (step 12):** Copilot CLI does **not** bundle LSP servers — you must install them yourself before step 12 takes effect. Claude Code installs LSP support via plugins (step 13, no manual binary install needed).
+>
+> | Language | Binary to install (Copilot) | Claude Code plugin (auto) |
+> |---|---|---|
+> | Go | `gopls` | `gopls-lsp` |
+> | TypeScript / JavaScript / Bun | `typescript-language-server` | `typescript-lsp` |
+> | Rust | `rust-analyzer` | `rust-analyzer-lsp` |
+> | Python | `pyright-langserver` (`pyright`) | `pyright-lsp` |
+> | C / C++ | `clangd` | `clangd-lsp` |
 
 ### `install-project.sh` — per-repo
 
@@ -88,6 +100,7 @@ install-project.sh      Per-project agent instruction files
 
 configs/
   mcp.json              MCP server definitions (context7, memory)
+  lsp-config.json       Copilot CLI LSP config (Go, TS/JS, Rust, Python, C/C++)
   post-tool-hook.sh     PostToolUse output filter
   rtk-config.toml       RTK hooks ultra-compact config
 

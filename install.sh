@@ -332,6 +332,60 @@ fi
 echo ""
 
 ###############################################################################
+# 12. Copilot CLI LSP config (~/.copilot/lsp-config.json)
+###############################################################################
+bold "12. Copilot CLI LSP config (Go, TypeScript/JS, Rust, Python, C/C++)"
+info "Prerequisite: LSP binaries must be installed separately (gopls, typescript-language-server, rust-analyzer, pyright-langserver, clangd)"
+COPILOT_LSP="$HOME/.copilot/lsp-config.json"
+LSP_TEMPLATE="$SCRIPT_DIR/configs/lsp-config.json"
+if $DRY_RUN; then
+  dry "Would write LSP config → $COPILOT_LSP"
+else
+  if [[ -f "$COPILOT_LSP" ]]; then
+    if diff -q "$LSP_TEMPLATE" "$COPILOT_LSP" &>/dev/null; then
+      ok "Already up to date"
+    else
+      cp "$COPILOT_LSP" "${COPILOT_LSP}.bak"
+      info "Backed up existing → ${COPILOT_LSP}.bak"
+      cp "$LSP_TEMPLATE" "$COPILOT_LSP"
+      ok "Updated $COPILOT_LSP"
+    fi
+  else
+    cp "$LSP_TEMPLATE" "$COPILOT_LSP"
+    ok "Installed $COPILOT_LSP"
+  fi
+fi
+echo ""
+
+###############################################################################
+# 13. Claude Code LSP plugins
+###############################################################################
+bold "13. Claude Code LSP plugins (Go, TypeScript/JS, Rust, Python, C/C++)"
+CLAUDE_LSP_PLUGINS=(
+  "gopls-lsp@claude-plugins-official"
+  "typescript-lsp@claude-plugins-official"
+  "rust-analyzer-lsp@claude-plugins-official"
+  "pyright-lsp@claude-plugins-official"
+  "clangd-lsp@claude-plugins-official"
+)
+if ! command -v claude &>/dev/null; then
+  skip "claude CLI not found — skipping Claude Code LSP plugins"
+else
+  for plugin in "${CLAUDE_LSP_PLUGINS[@]}"; do
+    plugin_name="${plugin%@*}"
+    already=$(claude plugin list 2>/dev/null | grep -w "$plugin_name" || true)
+    if [[ -n "$already" ]]; then
+      ok "$plugin_name — already installed"
+    elif $DRY_RUN; then
+      dry "Would install: claude plugin install $plugin"
+    else
+      claude plugin install "$plugin" 2>/dev/null && ok "$plugin_name — installed" || skip "$plugin_name — install failed (check marketplace)"
+    fi
+  done
+fi
+echo ""
+
+###############################################################################
 # Summary
 ###############################################################################
 bold "Installation complete!"
