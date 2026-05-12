@@ -6,12 +6,13 @@
 
 set -euo pipefail
 
-INPUT=$(cat)
+HOOK_INPUT=$(cat)
+export HOOK_INPUT
 
-python3 - <<PYEOF
+python3 - <<'PYEOF'
 import json, subprocess, sys, os
 
-data = json.loads("""$INPUT""".replace('"""', '"'))
+data = json.loads(os.environ['HOOK_INPUT'])
 
 # PostToolUse payload shape: {tool_name, tool_input, tool_response: {output, is_error}}
 response = data.get("tool_response", {})
