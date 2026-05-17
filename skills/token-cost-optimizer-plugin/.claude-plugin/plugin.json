@@ -1,0 +1,8 @@
+{
+  "name": "token-cost-optimizer",
+  "description": "Proactive token cost reduction skill. Estimates cost pressure early and applies reduction tactics before running large tasks.",
+  "author": {
+    "name": "aacostsaver",
+    "url": "https://github.com/innobead/aacostsaver"
+  }
+}

@@ -300,11 +300,11 @@ bold "10. Caveman + cost-saving skills (caveman, token-cost-optimizer, compress)
 if $SKIP_HOOKS; then
   skip "Skipped (--skip-hooks)"
 else
-  chmod +x "$SCRIPT_DIR/scripts/install-caveman.sh" 2>/dev/null || true
+  chmod +x "$SCRIPT_DIR/scripts/install-skills.sh" 2>/dev/null || true
   if $DRY_RUN; then
-    DRY_RUN=1 bash "$SCRIPT_DIR/scripts/install-caveman.sh"
+    DRY_RUN=1 bash "$SCRIPT_DIR/scripts/install-skills.sh"
   else
-    bash "$SCRIPT_DIR/scripts/install-caveman.sh"
+    bash "$SCRIPT_DIR/scripts/install-skills.sh"
   fi
 fi
 echo ""

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# install-caveman.sh — Install caveman for Claude Code and Copilot CLI
-# Source: https://github.com/JuliusBrussee/caveman
+# install-skills.sh — Install skills for Claude Code and Copilot CLI
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -70,6 +69,29 @@ if command -v claude &>/dev/null || [[ -d "$HOME/.claude" ]]; then
   fi
 else
   info "Claude Code not detected — skipping"
+fi
+
+# ── 4. Claude Code: token-cost-optimizer plugin ───────────────────────────
+echo ""
+echo "Installing token-cost-optimizer for Claude Code..."
+PLUGIN_DIR="$SCRIPT_DIR/../skills/token-cost-optimizer-plugin"
+if command -v claude &>/dev/null; then
+  if dry_run; then
+    dry "Would register aacostsaver marketplace and install token-cost-optimizer@aacostsaver"
+  else
+    already_plugin=$(claude plugin list 2>/dev/null | grep -w "token-cost-optimizer" || true)
+    if [[ -n "$already_plugin" ]]; then
+      ok "token-cost-optimizer — already installed"
+    else
+      marketplace_exists=$(claude plugin marketplace list 2>/dev/null | grep -w "aacostsaver" || true)
+      if [[ -z "$marketplace_exists" ]]; then
+        claude plugin marketplace add "$PLUGIN_DIR" 2>/dev/null
+      fi
+      claude plugin install token-cost-optimizer@aacostsaver 2>/dev/null && ok "token-cost-optimizer@aacostsaver — installed" || info "token-cost-optimizer install failed — run manually: claude plugin install token-cost-optimizer@aacostsaver"
+    fi
+  fi
+else
+  info "claude CLI not found — skipping token-cost-optimizer Claude Code plugin"
 fi
 
 echo ""
